@@ -1,76 +1,79 @@
-module Chess.Input (parseInput) where
+module Chess.Input where
 
-import Data.Char (isDigit, chr, ord)
-import Data.Maybe (fromJust, isNothing)
+import Data.Char (ord)
 
-import Chess.Types
+import Chess.Pieces
+import Chess.Board
+import Chess.Game
 
-parseRank :: Char -> Int
-parseRank r = ord r - ord '0'
+data Input = Input {piece :: Piece, origin :: BoardCell, target::BoardCell}
+    deriving (Read, Show, Eq)
 
-prevFile :: Char -> Char
-prevFile = chr . (\c -> c - 1) . ord
-
-nextFile :: Char -> Char
-nextFile = succ
-
-parsePieceValue :: Char -> PieceValue
-parsePieceValue input =
-    case input of
-        'K' -> King
-        'Q' -> Queen
-        'B' -> Bishop
-        'N' -> Knight
-        'R' -> Rook
-        'P' -> Pawn
-        _   -> None
-
-parseCell :: Char -> Char -> Maybe BoardCell
-parseCell file rank = if (elem file "abcdefg") && isDigit rank
-                         then Just (file, parseRank rank)
-                         else Nothing
-
-findPieceAtRank :: Board -> Piece -> Int -> Maybe BoardCell
-findPieceAtRank board piece rank = if length candidates == 1 then Just ((fst.head) candidates) else Nothing
-    where
-        candidates = filter (\cell -> snd cell == piece && (snd.fst) cell == rank) board
-
-findPieceAtFile :: Board -> Piece -> Char -> Maybe BoardCell
-findPieceAtFile board piece file = if length candidates == 1 then Just ((fst.head) candidates) else Nothing
-    where
-        candidates = filter (\cell -> snd cell == piece && (fst.fst) cell == file) board
-
-findPiece :: Board -> Piece -> Maybe BoardCell
-findPiece board piece = if length candidates == 1 then Just ((fst.head) candidates) else Nothing
-    where
-        candidates = filter (\cell -> snd cell == piece) board
+type ParsedInput = (Maybe Input, Maybe ChessError)
 
 
-parseInput :: GameStatus -> [Char] -> Maybe Input
-parseInput gameStatus (p:from:toFile:toRank:[]) =
-    if isNothing cell then Nothing else Just (Input piece fromCell toCell) where
-         piece    = Piece (parsePieceValue p) (currentPlayer gameStatus)
-         board    = currentBoard gameStatus
-         toCell   = (toFile, parseRank toRank)
-         cell     = if isDigit from
-                        then findPieceAtRank board piece (parseRank from)
-                        else findPieceAtFile board piece from
-         fromCell = fromJust cell
+parseInput :: GameStatus -> [Char] -> ParsedInput
 
-parseInput gameStatus (p:file:toRank:[]) =
-    if isNothing position then Nothing else Just (Input piece fromCell toCell) where
-        board    = currentBoard gameStatus
-        piece    = Piece (parsePieceValue p) (currentPlayer gameStatus)
-        position = findPiece board piece
-        fromCell = fromJust position
-        toCell   = (file, parseRank toRank)
+parseInput _             [] = (Nothing, Just EmptyInput)
+parseInput _         (_:[]) = (Nothing, Just ShortInput)
+parseInput _ (_:_:_:_:_:xs) = (Nothing, Just LongInput)
 
-parseInput gameStatus (toFile:toRank:[]) =
-    if isNothing position then Nothing else Just (Input piece fromCell toCell) where
-        board = currentBoard gameStatus
-        piece = Piece Pawn (currentPlayer gameStatus)
-        position = findPieceAtFile board piece toFile
-        fromCell = fromJust position
-        toCell   = (toFile, (parseRank toRank))
+parseInput gameStatus input = validateInput piece source target where
+    piece  = getPieceFromInput  gameStatus input
+    source = getSourceFromInput gameStatus piece input
+    target = getTargetFromInput input
 
-parseInput _ _ = Nothing
+
+validateInput :: (Maybe Piece) -> (Maybe BoardCell) -> (Maybe BoardCell) -> ParsedInput
+
+validateInput Nothing _       _       = (Nothing, Just CouldNotParsePiece)
+validateInput _       Nothing _       = (Nothing, Just CouldNotParseSource)
+validateInput _       _       Nothing = (Nothing, Just CouldNotParseTarget)
+
+validateInput (Just piece) (Just source) (Just target) =
+    let input = Input piece source target in (Just input, Nothing)
+
+
+getPieceFromInput :: GameStatus -> [Char] -> Maybe Piece
+getPieceFromInput (GameStatus _ player _) (_:_:[]) = Just (Piece Pawn player)
+getPieceFromInput (GameStatus _ player _) (p:_:_:_) = parsePiece p player
+getPieceFromInput _ _ = Nothing
+
+
+getSourceFromInput :: GameStatus -> (Maybe Piece) -> [Char] -> Maybe BoardCell
+
+getSourceFromInput (GameStatus board _ _) (Just piece) (_:_:_:[]) =
+    findPiece board piece
+
+getSourceFromInput (GameStatus board _ _) (Just piece) (_:fileOrRank:_:_:[]) =
+    findPieceAtFileOrRank board piece fileOrRank
+
+getSourceFromInput (GameStatus board _ _) (Just piece) (file:_:[]) =
+    findPieceAtFile board piece file
+
+getSourceFromInput _ _ _ = Nothing
+
+
+getTargetFromInput :: [Char] -> Maybe BoardCell
+getTargetFromInput     (file:rank:[]) = parseBoardCell file rank
+getTargetFromInput   (_:file:rank:[]) = parseBoardCell file rank
+getTargetFromInput (_:_:file:rank:[]) = parseBoardCell file rank
+getTargetFromInput                  _ = Nothing
+
+
+parseBoardCell :: Char -> Char -> Maybe BoardCell
+parseBoardCell file rank = if elem file "abcdefgh" && elem rank "12345678"
+                              then Just (file, parseRank rank)
+                              else Nothing
+
+
+parsePiece :: Char -> Player -> Maybe Piece
+parsePiece p player =
+    case p of
+        'K' -> Just (Piece King   player)
+        'Q' -> Just (Piece Queen  player)
+        'B' -> Just (Piece Bishop player)
+        'N' -> Just (Piece Knight player)
+        'R' -> Just (Piece Rook   player)
+        'P' -> Just (Piece Pawn   player)
+        _   -> Nothing

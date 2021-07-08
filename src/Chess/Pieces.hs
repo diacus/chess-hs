@@ -1,8 +1,6 @@
-module Chess.Types where
+module Chess.Pieces where
 
-type BoardCell = (Char, Int)
-
-data Player = White | Black
+data Player = White | Black | Nobody
     deriving (Read, Show, Enum, Eq, Ord)
 
 data PieceValue = None | Reachable | Pawn | Knight | Bishop | Rook | Queen | King
@@ -29,11 +27,7 @@ instance Show Piece where
        Piece Reachable Black -> " ⚉"
        Piece None      _     -> "  "
 
-data Input = Input {piece :: Piece, origin :: BoardCell, target::BoardCell}
-    deriving (Read, Show, Eq)
-
-type Move = (Piece, BoardCell, BoardCell)
-
-type Board = [(BoardCell, Piece)]
-
-data GameStatus = GameStatus {currentBoard :: Board, currentPlayer :: Player}
+nextPlayer :: Player -> Player
+nextPlayer White  = Black
+nextPlayer Black  = White
+nextPlayer Nobody = Nobody

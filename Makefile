@@ -1,10 +1,10 @@
 run:
-	cabal run chess
+	cabal new-run chess
 
 test:
-	cabal run test
+	cabal new-run test
 
 shell:
-	cabal new-repl chess
+	cabal new-repl test
 
 .PHONY: run test shell

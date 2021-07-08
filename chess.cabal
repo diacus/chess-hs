@@ -51,13 +51,24 @@ executable chess
   main-is:             Main.hs
 
   -- Modules included in this executable, other than Main.
-  other-modules: Chess Chess.Engine Chess.Types Chess.Input PiecePaths
+  other-modules:       Chess
+                       , Chess.Board
+                       , Chess.Engine
+                       , Chess.Input
+                       , Chess.Pieces
+                       , Chess.Game
+                       , Chess.Moves.King
+                       , Chess.Moves.Queen
+                       , Chess.Moves.Bishop
+                       , Chess.Moves.Rook
+                       , Chess.Moves.Knight
+                       , Chess.Moves.Pawn
 
   -- LANGUAGE extensions used by modules in this package.
   -- other-extensions:
 
   -- Other library packages from which modules are imported.
-  build-depends:       base >=4.11 && <4.13
+  build-depends:       base >=4.11 && <4.13, prompt >=0.1.1.2
 
   -- Directories containing source files.
   hs-source-dirs:      src
@@ -67,7 +78,22 @@ executable chess
 
 executable test
   main-is:             Test.hs
-  other-modules:       Test.Chess.Input Chess Chess.Engine Chess.Types Chess.Input PiecePaths
+  other-modules:       Chess
+                       , Test.Chess.Board
+                       , Test.Chess.Input
+                       , Test.Chess.Engine
+                       , Test.Chess.Moves.King
+                       , Chess.Board
+                       , Chess.Input
+                       , Chess.Engine
+                       , Chess.Pieces
+                       , Chess.Game
+                       , Chess.Moves.King
+                       , Chess.Moves.Queen
+                       , Chess.Moves.Bishop
+                       , Chess.Moves.Rook
+                       , Chess.Moves.Knight
+                       , Chess.Moves.Pawn
   build-depends:       base >=4.11 && <4.13, HUnit >=1.6.2.0
   hs-source-dirs:      src, test
   default-language:    Haskell2010

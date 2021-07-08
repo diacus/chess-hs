@@ -3,6 +3,7 @@ module PiecePaths where
 import Data.Char (chr, ord)
 import Data.List (sort)
 
+import Chess.Pieces
 import Chess.Types
 
 type Coordinate = (Int, Int)
