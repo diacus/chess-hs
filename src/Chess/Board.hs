@@ -10,59 +10,6 @@ type BoardCell = (Char, Int)
 
 type Board = [(BoardCell, Piece)]
 
-getPieceAt :: Board -> BoardCell -> Piece
-getPieceAt board cell = let thePiece = lookup cell board
-                         in fromMaybe (Piece None Black) thePiece
-
-
-boardToRanks :: Board -> [[Piece]]
-boardToRanks board =
-    [[getPieceAt board (file,rank) | file <- ['a' .. 'h']] | rank <- [1..8]]
-
-
-rankToStr :: (Int, [Piece]) -> [Char]
-rankToStr (rank, ps) = '\n': (label ++ row ++ "  " ++ label) where
-    label = show rank
-    row = concat $ (map show) ps
-
-
-showBoard :: Board -> [Char]
-showBoard = linesToText . mergePicesAndBorders . boardToRanks
-
-
-findPieceAtFileOrRank :: Board -> Piece -> Char -> Maybe BoardCell
-findPieceAtFileOrRank board piece from =
-    if isDigit from
-       then findPieceAtRank board piece (parseRank from)
-       else findPieceAtFile board piece from
-
-
-parseRank :: Char -> Int
-parseRank r = ord r - ord '0'
-
-
-findPieceAtRank :: Board -> Piece -> Int -> Maybe BoardCell
-findPieceAtRank board piece rank =
-    let candidates = filter (\cell -> snd cell == piece && (snd.fst) cell == rank) board
-     in getPositionOfUniqPiece candidates
-
-
-findPieceAtFile :: Board -> Piece -> Char -> Maybe BoardCell
-findPieceAtFile board piece file =
-  let candidates = filter (\cell -> snd cell == piece && (fst.fst) cell == file) board
-   in getPositionOfUniqPiece candidates
-
-
-findPiece :: Board -> Piece -> Maybe BoardCell
-findPiece board piece =
-  let cs = filter (\c -> snd c == piece) board
-   in getPositionOfUniqPiece cs
-
-
-getPositionOfUniqPiece :: Board -> Maybe BoardCell
-getPositionOfUniqPiece [(cell, _)] = Just cell
-getPositionOfUniqPiece _ = Nothing
-
 
 initialBoard :: Board
 initialBoard = [(('a', 8), (Piece Rook   Black)),
@@ -99,3 +46,50 @@ initialBoard = [(('a', 8), (Piece Rook   Black)),
                 (('g', 2), (Piece Pawn   White)),
                 (('h', 2), (Piece Pawn   White))]
 
+
+showBoard :: Board -> [Char]
+showBoard = linesToText . mergePicesAndBorders . boardToRanks
+
+
+boardToRanks :: Board -> [[Piece]]
+boardToRanks board =
+    [[getPieceAt board (file,rank) | file <- ['a' .. 'h']] | rank <- [1..8]]
+
+
+getPieceAt :: Board -> BoardCell -> Piece
+getPieceAt board cell = let thePiece = lookup cell board
+                         in fromMaybe (Piece None Black) thePiece
+
+
+findPieceAtFileOrRank :: Board -> Piece -> Char -> Maybe BoardCell
+findPieceAtFileOrRank board piece from =
+    if isDigit from
+       then findPieceAtRank board piece (parseRank from)
+       else findPieceAtFile board piece from
+
+
+parseRank :: Char -> Int
+parseRank r = ord r - ord '0'
+
+
+findPieceAtRank :: Board -> Piece -> Int -> Maybe BoardCell
+findPieceAtRank board piece rank =
+    let candidates = filter (\cell -> snd cell == piece && (snd.fst) cell == rank) board
+     in getPositionOfUniqPiece candidates
+
+
+findPieceAtFile :: Board -> Piece -> Char -> Maybe BoardCell
+findPieceAtFile board piece file =
+  let candidates = filter (\cell -> snd cell == piece && (fst.fst) cell == file) board
+   in getPositionOfUniqPiece candidates
+
+
+findPiece :: Board -> Piece -> Maybe BoardCell
+findPiece board piece =
+  let cs = filter (\c -> snd c == piece) board
+   in getPositionOfUniqPiece cs
+
+
+getPositionOfUniqPiece :: Board -> Maybe BoardCell
+getPositionOfUniqPiece [(cell, _)] = Just cell
+getPositionOfUniqPiece _ = Nothing
