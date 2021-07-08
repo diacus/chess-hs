@@ -63,6 +63,7 @@ executable chess
                        , Chess.Moves.Rook
                        , Chess.Moves.Knight
                        , Chess.Moves.Pawn
+                       , Chess.TextUI
 
   -- LANGUAGE extensions used by modules in this package.
   -- other-extensions:

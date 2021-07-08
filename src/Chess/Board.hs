@@ -4,6 +4,7 @@ import Data.Char (ord, isDigit)
 import Data.Maybe (fromJust, fromMaybe, isNothing)
 
 import Chess.Pieces
+import Chess.TextUI
 
 type BoardCell = (Char, Int)
 
@@ -14,9 +15,9 @@ getPieceAt board cell = let thePiece = lookup cell board
                          in fromMaybe (Piece None Black) thePiece
 
 
-boardToRanks :: Board -> [(Int, [Piece])]
+boardToRanks :: Board -> [[Piece]]
 boardToRanks board =
-    [(rank, [getPieceAt board (file,rank) | file <- ['a' .. 'h']]) | rank <- [1..8]]
+    [[getPieceAt board (file,rank) | file <- ['a' .. 'h']] | rank <- [1..8]]
 
 
 rankToStr :: (Int, [Piece]) -> [Char]
@@ -26,9 +27,7 @@ rankToStr (rank, ps) = '\n': (label ++ row ++ "  " ++ label) where
 
 
 showBoard :: Board -> [Char]
-showBoard board = filesLabel ++ stringRanks ++ filesLabel where
-    stringRanks = (concat . (map rankToStr) . boardToRanks) board
-    filesLabel  = "\n  a b c d e f g h"
+showBoard = linesToText . mergePicesAndBorders . boardToRanks
 
 
 findPieceAtFileOrRank :: Board -> Piece -> Char -> Maybe BoardCell
