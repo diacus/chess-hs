@@ -3,7 +3,6 @@ module Chess.Input where
 import Data.Char (ord)
 
 import Chess.Pieces
-import Chess.Board
 import Chess.Game
 
 data Input = Input {piece :: Piece, origin :: BoardCell, target::BoardCell}
@@ -24,7 +23,10 @@ parseInput gameStatus input = validateInput piece source target where
     target = getTargetFromInput input
 
 
-validateInput :: (Maybe Piece) -> (Maybe BoardCell) -> (Maybe BoardCell) -> ParsedInput
+validateInput :: (Maybe Piece)
+              -> (Maybe BoardCell)
+              -> (Maybe BoardCell)
+              -> ParsedInput
 
 validateInput Nothing _       _       = (Nothing, Just CouldNotParsePiece)
 validateInput _       Nothing _       = (Nothing, Just CouldNotParseSource)

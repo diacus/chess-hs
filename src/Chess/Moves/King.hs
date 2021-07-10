@@ -1,17 +1,12 @@
-module Chess.Moves.King where
+module Chess.Moves.King (isValidKingMove) where
 
 import Chess.Pieces
-import Chess.Board
+import Chess.Input
 import Chess.Game
-import Chess.Coordinate
+import Chess.Moves.Types
 
-isValidKingMove :: Board -> Player -> BoardCell -> BoardCell -> Bool
-isValidKingMove board player source target =
-    let reachable = Piece Reachable player
-     in elem (target, reachable) (reachableCells board player source)
-
-reachableCells :: Board -> Player -> BoardCell -> Board
-reachableCells = undefined
+isValidKingMove :: MoveValidator
+isValidKingMove  = isTargetInScope reachableCoordinates
 
 reachableCoordinates :: PathComputerCallback
 reachableCoordinates (m, n) =

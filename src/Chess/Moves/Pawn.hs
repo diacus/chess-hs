@@ -1,8 +1,6 @@
 module Chess.Moves.Pawn (isValidPawnMove) where
 
-import Chess.Pieces
-import Chess.Board
-import Chess.Game
+import Chess.Moves.Types (MoveValidator)
 
-isValidPawnMove :: Board -> Player -> BoardCell -> BoardCell -> Bool
+isValidPawnMove :: MoveValidator
 isValidPawnMove = undefined

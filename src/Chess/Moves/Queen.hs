@@ -1,8 +1,12 @@
 module Chess.Moves.Queen (isValidQueenMove) where
 
-import Chess.Pieces
-import Chess.Board
-import Chess.Game
+import Chess.Moves.Types
+import Chess.Moves.Bishop
+import Chess.Moves.Rook
 
-isValidQueenMove :: Board -> Player -> BoardCell -> BoardCell -> Bool
-isValidQueenMove = undefined
+isValidQueenMove :: MoveValidator
+isValidQueenMove = isTargetInScope reachableCoordinates
+
+reachableCoordinates :: PathComputerCallback
+reachableCoordinates coord =
+    (reachableRookCoordinates coord) ++ (reachableBishopCoordinates coord)

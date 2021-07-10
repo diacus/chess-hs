@@ -4,7 +4,6 @@ import Data.Maybe (isNothing, fromJust)
 import Test.HUnit
 
 import Chess.Pieces
-import Chess.Board
 import Chess.Engine
 import Chess.Game
 import Chess.Input

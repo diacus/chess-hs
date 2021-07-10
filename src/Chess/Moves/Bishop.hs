@@ -1,8 +1,11 @@
-module Chess.Moves.Bishop (isValidBishopMove) where
+module Chess.Moves.Bishop  where
 
-import Chess.Pieces
-import Chess.Board
-import Chess.Game
+import Chess.Moves.Types
 
-isValidBishopMove :: Board -> Player -> BoardCell -> BoardCell -> Bool
-isValidBishopMove = undefined
+isValidBishopMove :: MoveValidator
+isValidBishopMove = isTargetInScope reachableBishopCoordinates
+
+reachableBishopCoordinates :: PathComputerCallback
+reachableBishopCoordinates (m, n) =
+    let deltas = [-7 .. -1] ++ [1 .. 7]
+     in [(m+d,n+d) | d <- deltas] ++ [(m+d,n-d) | d <- deltas]

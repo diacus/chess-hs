@@ -1,8 +1,12 @@
-module Chess.Moves.Rook (isValidRookMove) where
+module Chess.Moves.Rook where
 
-import Chess.Pieces
-import Chess.Board
-import Chess.Game
+import Chess.Moves.Types
 
-isValidRookMove :: Board -> Player -> BoardCell -> BoardCell -> Bool
-isValidRookMove = undefined
+isValidRookMove :: MoveValidator
+isValidRookMove = isTargetInScope reachableRookCoordinates
+
+reachableRookCoordinates :: PathComputerCallback
+reachableRookCoordinates (m, n) =
+    let deltas = [-7 .. -1] ++ [1 .. 7]
+     in [(m,n+d) | d <- deltas] ++ [(m+d,n) | d <- deltas]
+

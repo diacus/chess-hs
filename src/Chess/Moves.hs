@@ -1,32 +1,33 @@
 module Chess.Moves (isValidMove) where
 
 import Chess.Pieces
-import Chess.Board
-import Chess.Game
 import Chess.Input
-import Chess.Moves.King
-import Chess.Moves.Queen
-import Chess.Moves.Bishop
-import Chess.Moves.Rook
-import Chess.Moves.Knight
-import Chess.Moves.Pawn
+import Chess.Game
 
-isValidMove :: GameStatus -> Input -> Bool
-isValidMove _ _ = True
--- isValidMove (GameStatus board player _) (Input piece from to) =
---     isPieceInPlace board player piece from && isValidDestiny board piece from to
+import Chess.Moves.Types  (MoveValidator)
+import Chess.Moves.King   (isValidKingMove)
+import Chess.Moves.Queen  (isValidQueenMove)
+import Chess.Moves.Bishop (isValidBishopMove)
+import Chess.Moves.Rook   (isValidRookMove)
+import Chess.Moves.Knight (isValidKnightMove)
+import Chess.Moves.Pawn   (isValidPawnMove)
 
-
-isPieceInPlace :: Board -> Player -> Piece -> BoardCell -> Bool
-isPieceInPlace = undefined
+isValidMove :: MoveValidator
+isValidMove gameStatus input =
+    isPieceInPlace gameStatus input && isValidDestiny gameStatus input
 
 
-isValidDestiny :: Board -> Piece -> BoardCell -> BoardCell -> Bool
-isValidDestiny board piece from to
-    | value piece == King   = isValidKingMove   board (player piece) from to
-    | value piece == Queen  = isValidQueenMove  board (player piece) from to
-    | value piece == Rook   = isValidRookMove   board (player piece) from to
-    | value piece == Bishop = isValidBishopMove board (player piece) from to
-    | value piece == Knight = isValidKnightMove board (player piece) from to
-    | value piece == Pawn   = isValidPawnMove   board (player piece) from to
-    | otherwise             = False
+isPieceInPlace :: MoveValidator
+isPieceInPlace gameStatus (Input piece position _) =
+  isPieceAtCell gameStatus piece position
+
+
+isValidDestiny :: MoveValidator
+isValidDestiny gameStatus input
+  | (value . piece) input == King   = isValidKingMove   gameStatus input
+  | (value . piece) input == Queen  = isValidQueenMove  gameStatus input
+  | (value . piece) input == Rook   = isValidRookMove   gameStatus input
+  | (value . piece) input == Bishop = isValidBishopMove gameStatus input
+  | (value . piece) input == Knight = isValidKnightMove gameStatus input
+  | (value . piece) input == Pawn   = isValidPawnMove   gameStatus input
+  | otherwise = False
