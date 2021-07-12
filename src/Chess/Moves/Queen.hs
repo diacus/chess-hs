@@ -1,4 +1,4 @@
-module Chess.Moves.Queen (isValidQueenMove) where
+module Chess.Moves.Queen (isValidQueenMove, reachableBoard) where
 
 import Chess.Moves.Types
 import Chess.Moves.Bishop
@@ -10,3 +10,5 @@ isValidQueenMove = isTargetInScope reachableCoordinates
 reachableCoordinates :: PathComputerCallback
 reachableCoordinates coord =
     (reachableRookCoordinates coord) ++ (reachableBishopCoordinates coord)
+
+reachableBoard coord = reachableRookCoordinates coord

@@ -12,22 +12,24 @@ import Chess.Moves.Rook   (isValidRookMove)
 import Chess.Moves.Knight (isValidKnightMove)
 import Chess.Moves.Pawn   (isValidPawnMove)
 
+
 isValidMove :: MoveValidator
 isValidMove gameStatus input =
     isPieceInPlace gameStatus input && isValidDestiny gameStatus input
 
 
 isPieceInPlace :: MoveValidator
-isPieceInPlace gameStatus (Input piece position _) =
-  isPieceAtCell gameStatus piece position
+isPieceInPlace gameStatus input =
+  isPieceAtCell gameStatus (getPiece input) (getOrigin input)
 
 
 isValidDestiny :: MoveValidator
 isValidDestiny gameStatus input
-  | (value . piece) input == King   = isValidKingMove   gameStatus input
-  | (value . piece) input == Queen  = isValidQueenMove  gameStatus input
-  | (value . piece) input == Rook   = isValidRookMove   gameStatus input
-  | (value . piece) input == Bishop = isValidBishopMove gameStatus input
-  | (value . piece) input == Knight = isValidKnightMove gameStatus input
-  | (value . piece) input == Pawn   = isValidPawnMove   gameStatus input
+  | value == King   = isValidKingMove   gameStatus input
+  | value == Queen  = isValidQueenMove  gameStatus input
+  | value == Rook   = isValidRookMove   gameStatus input
+  | value == Bishop = isValidBishopMove gameStatus input
+  | value == Knight = isValidKnightMove gameStatus input
+  | value == Pawn   = isValidPawnMove   gameStatus input
   | otherwise = False
+  where value = (getValue . getPiece) input

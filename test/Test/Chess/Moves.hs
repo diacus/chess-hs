@@ -8,9 +8,11 @@ import Chess.Game
 import Chess.Moves
 
 testMoves =
-  [ TestLabel "isValidMove White King" testKingNotFound
-  , TestLabel "isValidMove White King" testKingValidMove
+  [ TestLabel "isValidMove White King"  testKingNotFound
+  , TestLabel "isValidMove White King"  testKingValidMove
   , TestLabel "isValidMove White Queen" testQueenValidMove
+  , TestLabel "isValidMove White Queen" testQueenInalidMove
+  , TestLabel "isValidMove White Queen" testQueenCannotJumpPiece
   ]
 
 testKingNotFound =
@@ -33,3 +35,23 @@ testQueenValidMove =
                         (isValidMove game input))
     where game  = GameStatus [(('a', 1), (Piece Queen White))] White []
           input = Input (Piece Queen White) ('a', 1) ('h', 8)
+
+testQueenInalidMove =
+  TestCase (assertEqual ("Queen valid move\n" ++ (show game))
+                        False
+                        (isValidMove game input))
+    where game  = GameStatus [(('a', 1), (Piece Queen White))] White []
+          input = Input (Piece Queen White) ('a', 1) ('h', 7)
+
+testQueenCannotJumpPiece =
+  TestCase (assertEqual ("Queen valid move\nInput: " ++ (show input)
+                                                     ++ "\nBoard:\n"
+                                                     ++ (show game))
+                        False
+                        (isValidMove game input))
+    where game  = GameStatus [ (('a', 1), (Piece Queen White))
+                             , (('g', 7), (Piece Pawn Black))]
+                             White
+                             []
+          input = Input (Piece Queen White) ('a', 1) ('h', 8)
+

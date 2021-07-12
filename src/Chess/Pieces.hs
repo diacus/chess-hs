@@ -1,16 +1,16 @@
 module Chess.Pieces where
 
-data Player = White | Black | Nobody
+data PieceColor = White | Black | Nobody
     deriving (Read, Show, Enum, Eq, Ord)
 
 data PieceValue = None | Reachable | Pawn | Knight | Bishop | Rook | Queen | King
     deriving (Read, Show, Enum, Eq, Ord)
 
-data Piece = Piece {value :: PieceValue, player :: Player}
+data Piece = Piece {getValue :: PieceValue, getColor :: PieceColor}
    deriving (Read, Eq)
 
 instance Show Piece where
-    show (Piece value player) = case (Piece value player) of
+    show piece = case piece of
        Piece King      White -> " ♔ "
        Piece Queen     White -> " ♕ "
        Piece Rook      White -> " ♖ "
@@ -27,7 +27,7 @@ instance Show Piece where
        Piece Reachable Black -> " ⚉ "
        Piece None      _     -> "   "
 
-nextPlayer :: Player -> Player
-nextPlayer White  = Black
-nextPlayer Black  = White
-nextPlayer Nobody = Nobody
+nextColor :: PieceColor -> PieceColor
+nextColor White  = Black
+nextColor Black  = White
+nextColor Nobody = Nobody

@@ -7,7 +7,6 @@ import Chess.Pieces
 import Chess.TextUI
 
 type BoardCell = (Char, Int)
-
 type Board = [(BoardCell, Piece)]
 
 
@@ -44,12 +43,14 @@ type ErrorStack = [ChessError]
 
 
 data GameStatus =
-    GameStatus {getBoard  :: Board, getPlayer :: Player, getErrors :: ErrorStack}
+    GameStatus {getBoard  :: Board, getPlayer :: PieceColor, getErrors :: ErrorStack}
                deriving (Read, Eq)
+
 
 instance Show GameStatus where
    show (GameStatus board _ [])    = showBoard board
    show (GameStatus board _ (e:_)) = (showBoard board) ++ "\nError: " ++ (show e)
+
 
 initialBoard :: Board
 initialBoard = [(('a', 8), (Piece Rook   Black)),
@@ -95,6 +96,12 @@ isPieceAtCell :: GameStatus -> Piece -> BoardCell -> Bool
 isPieceAtCell (GameStatus board _ _) piece position
   | getPieceAt board position == piece = True
   | otherwise                          = False
+
+
+isCellEmpty gameStatus cell
+  | isNothing search = True
+  | otherwise        = False
+  where search = lookup cell (getBoard gameStatus)
 
 
 hasError :: GameStatus -> Bool

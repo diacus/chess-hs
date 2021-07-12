@@ -5,7 +5,9 @@ import Data.Char (ord)
 import Chess.Pieces
 import Chess.Game
 
-data Input = Input {piece :: Piece, origin :: BoardCell, target::BoardCell}
+data Input = Input { getPiece  :: Piece
+                   , getOrigin :: BoardCell
+                   , getTarget :: BoardCell }
     deriving (Read, Show, Eq)
 
 type ParsedInput = (Maybe Input, Maybe ChessError)
@@ -69,13 +71,13 @@ parseBoardCell file rank = if elem file "abcdefgh" && elem rank "12345678"
                               else Nothing
 
 
-parsePiece :: Char -> Player -> Maybe Piece
-parsePiece p player =
+parsePiece :: Char -> PieceColor -> Maybe Piece
+parsePiece p color =
     case p of
-        'K' -> Just (Piece King   player)
-        'Q' -> Just (Piece Queen  player)
-        'B' -> Just (Piece Bishop player)
-        'N' -> Just (Piece Knight player)
-        'R' -> Just (Piece Rook   player)
-        'P' -> Just (Piece Pawn   player)
+        'K' -> Just (Piece King   color)
+        'Q' -> Just (Piece Queen  color)
+        'B' -> Just (Piece Bishop color)
+        'N' -> Just (Piece Knight color)
+        'R' -> Just (Piece Rook   color)
+        'P' -> Just (Piece Pawn   color)
         _   -> Nothing
