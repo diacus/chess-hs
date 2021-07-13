@@ -52,40 +52,58 @@ instance Show GameStatus where
    show (GameStatus board _ (e:_)) = (showBoard board) ++ "\nError: " ++ (show e)
 
 
+--      a   b   c   d   e   f   g   h
+--    ┌───┬───┬───┬───┬───┬───┬───┬───┐
+--  1 │ ♖ │ ♘ │ ♗ │ ♕ │ ♔ │ ♗ │ ♘ │ ♖ │
+--    ├───┼───┼───┼───┼───┼───┼───┼───┤
+--  2 │ ♙ │ ♙ │ ♙ │ ♙ │ ♙ │ ♙ │ ♙ │ ♙ │
+--    ├───┼───┼───┼───┼───┼───┼───┼───┤
+--  3 │   │   │   │   │   │   │   │   │
+--    ├───┼───┼───┼───┼───┼───┼───┼───┤
+--  4 │   │   │   │   │   │   │   │   │
+--    ├───┼───┼───┼───┼───┼───┼───┼───┤
+--  5 │   │   │   │   │   │   │   │   │
+--    ├───┼───┼───┼───┼───┼───┼───┼───┤
+--  6 │   │   │   │   │   │   │   │   │
+--    ├───┼───┼───┼───┼───┼───┼───┼───┤
+--  7 │ ♟ │ ♟ │ ♟ │ ♟ │ ♟ │ ♟ │ ♟ │ ♟ │
+--    ├───┼───┼───┼───┼───┼───┼───┼───┤
+--  8 │ ♜ │ ♞ │ ♝ │ ♛ │ ♚ │ ♝ │ ♞ │ ♜ │
+--    └───┴───┴───┴───┴───┴───┴───┴───┘
 initialBoard :: Board
-initialBoard = [(('a', 8), (Piece Rook   Black)),
-                (('b', 8), (Piece Knight Black)),
-                (('c', 8), (Piece Bishop Black)),
-                (('d', 8), (Piece Queen  Black)),
-                (('e', 8), (Piece King   Black)),
-                (('f', 8), (Piece Bishop Black)),
-                (('g', 8), (Piece Knight Black)),
-                (('h', 8), (Piece Rook   Black)),
-                (('a', 7), (Piece Pawn   Black)),
-                (('b', 7), (Piece Pawn   Black)),
-                (('c', 7), (Piece Pawn   Black)),
-                (('d', 7), (Piece Pawn   Black)),
-                (('e', 7), (Piece Pawn   Black)),
-                (('f', 7), (Piece Pawn   Black)),
-                (('g', 7), (Piece Pawn   Black)),
-                (('h', 7), (Piece Pawn   Black)),
+initialBoard = [(('a', 1), (whiteRook)),
+                (('b', 1), (whiteKnight)),
+                (('c', 1), (whiteBishop)),
+                (('d', 1), (whiteQueen)),
+                (('e', 1), (whiteKing)),
+                (('f', 1), (whiteBishop)),
+                (('g', 1), (whiteKnight)),
+                (('h', 1), (whiteRook)),
+                (('a', 2), (whitePawn)),
+                (('b', 2), (whitePawn)),
+                (('c', 2), (whitePawn)),
+                (('d', 2), (whitePawn)),
+                (('e', 2), (whitePawn)),
+                (('f', 2), (whitePawn)),
+                (('g', 2), (whitePawn)),
+                (('h', 2), (whitePawn)),
 
-                (('a', 1), (Piece Rook   White)),
-                (('b', 1), (Piece Knight White)),
-                (('c', 1), (Piece Bishop White)),
-                (('d', 1), (Piece Queen  White)),
-                (('e', 1), (Piece King   White)),
-                (('f', 1), (Piece Bishop White)),
-                (('g', 1), (Piece Knight White)),
-                (('h', 1), (Piece Rook   White)),
-                (('a', 2), (Piece Pawn   White)),
-                (('b', 2), (Piece Pawn   White)),
-                (('c', 2), (Piece Pawn   White)),
-                (('d', 2), (Piece Pawn   White)),
-                (('e', 2), (Piece Pawn   White)),
-                (('f', 2), (Piece Pawn   White)),
-                (('g', 2), (Piece Pawn   White)),
-                (('h', 2), (Piece Pawn   White))]
+                (('a', 8), (blackRook)),
+                (('b', 8), (blackKnight)),
+                (('c', 8), (blackBishop)),
+                (('d', 8), (blackQueen)),
+                (('e', 8), (blackKing)),
+                (('f', 8), (blackBishop)),
+                (('g', 8), (blackKnight)),
+                (('h', 8), (blackRook)),
+                (('a', 7), (blackPawn)),
+                (('b', 7), (blackPawn)),
+                (('c', 7), (blackPawn)),
+                (('d', 7), (blackPawn)),
+                (('e', 7), (blackPawn)),
+                (('f', 7), (blackPawn)),
+                (('g', 7), (blackPawn)),
+                (('h', 7), (blackPawn))]
 
 
 initialGameStatus :: GameStatus

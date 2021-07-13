@@ -15,7 +15,7 @@ import Chess.Moves.Pawn   (isValidPawnMove)
 
 isValidMove :: MoveValidator
 isValidMove gameStatus input =
-    isPieceInPlace gameStatus input && isValidDestiny gameStatus input
+  isPieceInPlace gameStatus input && isValidDestiny gameStatus input
 
 
 isPieceInPlace :: MoveValidator

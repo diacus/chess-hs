@@ -7,4 +7,7 @@ test:
 shell:
 	cabal new-repl test
 
-.PHONY: run test shell
+clean:
+	$(RM) -r dist-newstyle
+
+.PHONY: run test shell clean

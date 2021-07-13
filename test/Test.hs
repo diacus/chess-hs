@@ -1,13 +1,9 @@
 import Test.HUnit 
 
-import Test.Chess.Engine (testEngine)
-import Test.Chess.Game   (testGame)
+import Test.Chess.Engine (engineTests)
 import Test.Chess.Input  (testInput)
-import Test.Chess.Moves  (testMoves)
 
-tests = TestList $ testGame
-                ++ testEngine
+tests = TestList $ engineTests
                 ++ testInput
-                ++ testMoves
 
 main = runTestTT tests

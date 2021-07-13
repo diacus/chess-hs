@@ -84,8 +84,8 @@ executable test
                        , Test.Chess.Game
                        , Test.Chess.Input
                        , Test.Chess.Engine
-                       , Test.Chess.Moves
-                       , Test.Chess.Moves.King
+                       , Test.Chess.Engine.King
+                       , Test.Chess.Engine.Queen
                        , Chess.Input
                        , Chess.Engine
                        , Chess.Pieces
