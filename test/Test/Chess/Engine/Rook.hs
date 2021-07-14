@@ -6,11 +6,35 @@ import Chess.Pieces
 import Chess.Game
 import Chess.Engine
 
-rookTests = [ TestLabel "Rook cannot jump fellow pieces" jumpPieceSameColor
-            , TestLabel "Invalid rook move should fail"  moveNotAllowed
+rookTests = [ TestLabel "Move to empty cell" moveToEmptyCell
+            , TestLabel "Cell is taken"      targetIsTaken
+            , TestLabel "Row is blocked"     rowIsBlocked
+            , TestLabel "Column is blocked"  columnIsBlocked
+            , TestLabel "Invalid rook move"  invalidMove
             ]
 
-jumpPieceSameColor = TestCase (assertEqual message expected actual) where
+moveToEmptyCell = TestCase (assertEqual message expected actual) where
+  rawInput   = "R1a8"
+  expected   = GameStatus [(target, whiteRook)] Black []
+  gameStatus = GameStatus [(origin, whiteRook)] White []
+  actual     = applyInput gameStatus rawInput
+  origin     = ('a', 1)
+  target     = ('a', 8)
+  message    = "This test should pass"
+
+
+targetIsTaken = TestCase (assertEqual message expected actual) where
+  rawInput   = "R1a8"
+  expected   = GameStatus board White [WTF]
+  gameStatus = GameStatus board White []
+  board      = [(origin, whiteRook), (target, whiteKing)]
+  actual     = applyInput gameStatus rawInput
+  origin     = ('a', 1)
+  target     = ('a', 8)
+  message    = getErrorMessage rawInput WTF
+
+
+rowIsBlocked = TestCase (assertEqual message expected actual) where
   rawInput   = "Rah4"
   expected   = GameStatus board White [MoveBlocked]
   gameStatus = GameStatus board White []
@@ -21,7 +45,18 @@ jumpPieceSameColor = TestCase (assertEqual message expected actual) where
   message    = getErrorMessage rawInput MoveBlocked
 
 
-moveNotAllowed = TestCase (assertEqual message expected actual) where
+columnIsBlocked = TestCase (assertEqual message expected actual) where
+  rawInput   = "R1a7"
+  expected   = GameStatus board White [MoveBlocked]
+  gameStatus = GameStatus board White []
+  actual     = applyInput gameStatus rawInput
+  board      = [(origin, whiteRook), (blocker, whitePawn)]
+  origin     = ('a', 1)
+  blocker    = ('a', 4)
+  message    = getErrorMessage rawInput MoveBlocked
+
+
+invalidMove = TestCase (assertEqual message expected actual) where
   rawInput   = "Rae1"
   expected   = GameStatus board White [InvalidMove]
   gameStatus = GameStatus board White []

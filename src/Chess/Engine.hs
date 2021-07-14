@@ -32,13 +32,23 @@ validate :: GameStatus -> Input -> GameStatus
 validate gameStatus input
   | origin       == target = pushError gameStatus WTF
   | isPieceFound == False  = pushError gameStatus PieceNotFound
+  | isCellFree   == False  = pushError gameStatus MoveBlocked
   | pieceValue   == Rook   = validateRookMove gameStatus input
   | otherwise              = undefined
   where isPieceFound = isPieceAtCell gameStatus piece origin
+        isCellFree   = checkCellIsAvailable gameStatus input
         piece        = getPiece  input
         origin       = getOrigin input
         target       = getTarget input
         pieceValue   = getValue  piece
+
+
+checkCellIsAvailable :: GameStatus -> Input -> Bool
+checkCellIsAvailable gameStatus input
+  | getValue piece == None                 = True
+  | getColor piece == getPlayer gameStatus = False
+  | otherwise                              = True
+  where piece = getPieceAt (getBoard gameStatus) (getTarget input)
 
 
 validateRookMove :: GameStatus -> Input -> GameStatus
