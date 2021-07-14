@@ -87,18 +87,11 @@ executable test
                        , Test.Chess.Engine.Errors
                        , Test.Chess.Engine.King
                        , Test.Chess.Engine.Queen
+                       , Test.Chess.Engine.Rook
                        , Chess.Input
                        , Chess.Engine
                        , Chess.Pieces
                        , Chess.Game
-                       , Chess.Moves
-                       , Chess.Moves.Queen
-                       , Chess.Moves.Bishop
-                       , Chess.Moves.Rook
-                       , Chess.Moves.Knight
-                       , Chess.Moves.Pawn
-                       , Chess.Moves.King
-                       , Chess.Moves.Types
                        , Chess.TextUI
   build-depends:       base >=4.11 && <4.13, HUnit >=1.6.2.0
   hs-source-dirs:      src, test

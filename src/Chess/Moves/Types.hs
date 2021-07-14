@@ -7,7 +7,7 @@ import Chess.Game
 
 type Coordinate = (Int, Int)
 type PathComputerCallback = (Coordinate -> [Coordinate])
-type MoveValidator = (GameStatus -> Input -> Bool)
+type MoveValidator = (GameStatus -> Input -> GameStatus)
 
 
 isTargetInScope :: PathComputerCallback -> GameStatus -> Input -> Bool

@@ -1,9 +1,16 @@
 module Chess.Moves.Rook where
 
+import Chess.Input
+import Chess.Game
 import Chess.Moves.Types
 
 isValidRookMove :: MoveValidator
-isValidRookMove = isTargetInScope reachableRookCoordinates
+isValidRookMove gameStatus input
+  | sourceFile == targetFile = undefined
+  | targetRank == targetRank = undefined
+  | otherwise = pushError gameStatus InvalidMove
+  where sourceFile = (getFile . getSource) input
+        targetFile = (getFile . getTarget) input
 
 reachableRookCoordinates :: PathComputerCallback
 reachableRookCoordinates (m, n) =

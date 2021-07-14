@@ -28,7 +28,7 @@ instance Show ChessError where
   show AmbiguousPiece      = "The imput refers to more than one piece or none"
   show BadInput            = "Invalid input, verify the chess notation"
   show InvalidMove         = "The move is invalid for the piece"
-  show MoveBlocked         = "There is a piece in the path that block the move" 
+  show MoveBlocked         = "There is a piece in the path that blocks the move" 
   show PieceNotFound       = "Selected piece is not in the choosen location"
   show CouldNotParsePiece  = "Could not parse the specified piece"
   show CouldNotParseSource = "Could not parse the specified source cell"
@@ -181,3 +181,26 @@ findPiece board piece =
 getPositionOfUniqPiece :: Board -> Maybe BoardCell
 getPositionOfUniqPiece [(cell, _)] = Just cell
 getPositionOfUniqPiece _ = Nothing
+
+getFile :: BoardCell -> Char
+getFile (file, _) = file
+
+getRank :: BoardCell -> Int
+getRank (_, rank) = rank
+
+
+getRankPath :: Int -> Char -> Char -> [BoardCell]
+getRankPath rank origin target
+  | null files = []
+  | otherwise  = zip files $ repeat rank
+  where files = (tail . init) [start..end]
+        start = min origin target
+        end   = max origin target
+
+getFilePath :: Char -> Int -> Int -> [BoardCell]
+getFilePath file origin target
+  | null ranks = []
+  | otherwise  = zip (repeat file) ranks
+  where ranks = (tail . init) [start..end]
+        start = min origin target
+        end   = max origin target

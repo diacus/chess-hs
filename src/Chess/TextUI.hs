@@ -28,7 +28,7 @@ goMerge xs ys ms
 
 linesToText :: [[Char]] -> [Char]
 linesToText = 
-    let header = "     a   b   c   d   e   f   g   h"
+    let header = "\n     a   b   c   d   e   f   g   h"
      in foldl (\a b -> a ++ "\n" ++ b) header
 
 piecesToString :: (Int, [Piece]) -> [Char]
