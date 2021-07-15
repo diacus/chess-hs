@@ -25,13 +25,13 @@ moveToEmptyCell = TestCase (assertEqual message expected actual) where
 
 targetIsTaken = TestCase (assertEqual message expected actual) where
   rawInput   = "R1a8"
-  expected   = GameStatus board White [WTF]
+  expected   = GameStatus board White [MoveBlocked]
   gameStatus = GameStatus board White []
   board      = [(origin, whiteRook), (target, whiteKing)]
   actual     = applyInput gameStatus rawInput
   origin     = ('a', 1)
   target     = ('a', 8)
-  message    = getErrorMessage rawInput WTF
+  message    = getErrorMessage rawInput MoveBlocked
 
 
 rowIsBlocked = TestCase (assertEqual message expected actual) where

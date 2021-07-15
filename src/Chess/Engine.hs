@@ -32,22 +32,28 @@ validate :: GameStatus -> Input -> GameStatus
 validate gameStatus input
   | origin       == target = pushError gameStatus WTF
   | isPieceFound == False  = pushError gameStatus PieceNotFound
-  | isCellFree   == False  = pushError gameStatus MoveBlocked
-  | pieceValue   == Rook   = validateRookMove gameStatus input
-  | otherwise              = undefined
-  where isPieceFound = isPieceAtCell gameStatus piece origin
-        isCellFree   = checkCellIsAvailable gameStatus input
-        piece        = getPiece  input
-        origin       = getOrigin input
-        target       = getTarget input
-        pieceValue   = getValue  piece
+  | hasError validatedPath = validatedPath
+  | otherwise              = checkCellIsAvailable validatedPath input
+  where isPieceFound  = isPieceAtCell gameStatus piece origin
+        validatedPath = validatePath gameStatus input
+        piece         = getPiece  input
+        origin        = getOrigin input
+        target        = getTarget input
+        pieceValue    = getValue  piece
 
 
-checkCellIsAvailable :: GameStatus -> Input -> Bool
+validatePath :: GameStatus -> Input -> GameStatus
+validatePath gameStatus input
+  | pieceValue == Rook = validateRookMove gameStatus input
+  | otherwise = undefined
+  where pieceValue = (getValue . getPiece) input
+
+
+checkCellIsAvailable :: GameStatus -> Input -> GameStatus
 checkCellIsAvailable gameStatus input
-  | getValue piece == None                 = True
-  | getColor piece == getPlayer gameStatus = False
-  | otherwise                              = True
+  | getValue piece == None                 = gameStatus
+  | getColor piece == getPlayer gameStatus = pushError gameStatus MoveBlocked
+  | otherwise                              = gameStatus
   where piece = getPieceAt (getBoard gameStatus) (getTarget input)
 
 
