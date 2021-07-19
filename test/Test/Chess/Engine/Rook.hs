@@ -6,11 +6,12 @@ import Chess.Pieces
 import Chess.Game
 import Chess.Engine
 
-rookTests = [ TestLabel "Move to empty cell" moveToEmptyCell
-            , TestLabel "Cell is taken"      targetIsTaken
-            , TestLabel "Row is blocked"     rowIsBlocked
-            , TestLabel "Column is blocked"  columnIsBlocked
-            , TestLabel "Invalid rook move"  invalidMove
+rookTests = [ TestLabel "Move to empty cell"     moveToEmptyCell
+            , TestLabel "Capture oponents piece" targetIsTaken
+            , TestLabel "Cell is taken"          targetIsTaken
+            , TestLabel "Row is blocked"         rowIsBlocked
+            , TestLabel "Column is blocked"      columnIsBlocked
+            , TestLabel "Invalid rook move"      invalidMove
             ]
 
 moveToEmptyCell = TestCase (assertEqual message expected actual) where
@@ -23,6 +24,16 @@ moveToEmptyCell = TestCase (assertEqual message expected actual) where
   message    = "This test should pass"
 
 
+captureOponentsPiece = TestCase (assertEqual message expected actual) where
+  rawInput   = "R4d7"
+  expected   = GameStatus [(target, whiteRook)] Black []
+  gameStatus = GameStatus [(origin, whiteRook), (target, blackQueen)] White []
+  actual     = applyInput gameStatus rawInput
+  origin     = ('d', 4)
+  target     = ('d', 7)
+  message    = "This test should pass"
+
+
 targetIsTaken = TestCase (assertEqual message expected actual) where
   rawInput   = "R1a8"
   expected   = GameStatus board White [MoveBlocked]
@@ -31,7 +42,7 @@ targetIsTaken = TestCase (assertEqual message expected actual) where
   actual     = applyInput gameStatus rawInput
   origin     = ('a', 1)
   target     = ('a', 8)
-  message    = getErrorMessage rawInput MoveBlocked
+  message    = getErrorMessage MoveBlocked rawInput
 
 
 rowIsBlocked = TestCase (assertEqual message expected actual) where
@@ -42,7 +53,7 @@ rowIsBlocked = TestCase (assertEqual message expected actual) where
   board      = [(origin, whiteRook), (blocker, whitePawn)]
   origin     = ('a', 4)
   blocker    = ('e', 4)
-  message    = getErrorMessage rawInput MoveBlocked
+  message    = getErrorMessage MoveBlocked rawInput
 
 
 columnIsBlocked = TestCase (assertEqual message expected actual) where
@@ -53,7 +64,7 @@ columnIsBlocked = TestCase (assertEqual message expected actual) where
   board      = [(origin, whiteRook), (blocker, whitePawn)]
   origin     = ('a', 1)
   blocker    = ('a', 4)
-  message    = getErrorMessage rawInput MoveBlocked
+  message    = getErrorMessage MoveBlocked rawInput
 
 
 invalidMove = TestCase (assertEqual message expected actual) where
@@ -64,9 +75,9 @@ invalidMove = TestCase (assertEqual message expected actual) where
   board      = [(origin, whiteRook), (blocker, whitePawn)]
   origin     = ('a', 4)
   blocker    = ('e', 1)
-  message    = getErrorMessage rawInput InvalidMove
+  message    = getErrorMessage InvalidMove rawInput
 
 
-getErrorMessage :: [Char] -> ChessError -> [Char]
-getErrorMessage input expectedError =
+getErrorMessage :: ChessError -> [Char] -> [Char]
+getErrorMessage expectedError input =
   "input '" ++ input ++ "' should raise '" ++ (show expectedError) ++ "' error"
