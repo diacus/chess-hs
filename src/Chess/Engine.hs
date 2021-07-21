@@ -44,8 +44,13 @@ validate gameStatus input
 
 validatePath :: GameStatus -> Input -> GameStatus
 validatePath gameStatus input
-  | pieceValue == Rook = validateRookMove gameStatus input
-  | otherwise = undefined
+  | pieceValue == Rook   = validateRookMove gameStatus input
+  | pieceValue == Knight = undefined
+  | pieceValue == Bishop = undefined
+  | pieceValue == Queen  = undefined
+  | pieceValue == King   = undefined
+  | pieceValue == Pawn   = undefined
+  | otherwise = pushError gameStatus WTF
   where pieceValue = (getValue . getPiece) input
 
 

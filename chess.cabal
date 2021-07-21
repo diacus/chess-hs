@@ -56,14 +56,6 @@ executable chess
                        , Chess.Input
                        , Chess.Pieces
                        , Chess.Game
-                       , Chess.Moves
-                       , Chess.Moves.Types
-                       , Chess.Moves.King
-                       , Chess.Moves.Queen
-                       , Chess.Moves.Bishop
-                       , Chess.Moves.Rook
-                       , Chess.Moves.Knight
-                       , Chess.Moves.Pawn
                        , Chess.TextUI
 
   -- LANGUAGE extensions used by modules in this package.

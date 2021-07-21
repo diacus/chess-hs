@@ -25,7 +25,7 @@ whiteReachable = Piece Reachable White
 blackReachable = Piece Reachable Black
 
 instance Show Piece where
-  show piece 
+  show piece
     | piece == whiteKing      = " ♔ "
     | piece == whiteQueen     = " ♕ "
     | piece == whiteRook      = " ♖ "
