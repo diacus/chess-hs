@@ -13,10 +13,11 @@ applyInput gameStatus rawInput = apply status input where
 
 apply :: GameStatus -> ParsedInput -> GameStatus
 apply gameStatus (Nothing, Just e) = pushError gameStatus e
-apply gameStatus (Just input, Nothing)
-  | hasError validatedStatus = validatedStatus
-  | otherwise                = movePiece validatedStatus input
-  where validatedStatus = validate gameStatus input
+apply gameStatus (Just input, Nothing) = movePiece gameStatus input
+-- apply gameStatus (Just input, Nothing)
+--   | hasError validatedStatus = validatedStatus
+--   | otherwise                = movePiece validatedStatus input
+--   where validatedStatus = validate gameStatus input
 
 
 movePiece :: GameStatus -> Input -> GameStatus
