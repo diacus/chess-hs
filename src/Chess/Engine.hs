@@ -4,6 +4,8 @@ import Chess.Pieces
 import Chess.Game
 import Chess.Input
 
+import Chess.Moves.Bishop
+
 
 applyInput :: GameStatus -> [Char] -> GameStatus
 applyInput gameStatus rawInput = apply status input where
@@ -13,11 +15,10 @@ applyInput gameStatus rawInput = apply status input where
 
 apply :: GameStatus -> ParsedInput -> GameStatus
 apply gameStatus (Nothing, Just e) = pushError gameStatus e
-apply gameStatus (Just input, Nothing) = movePiece gameStatus input
--- apply gameStatus (Just input, Nothing)
---   | hasError validatedStatus = validatedStatus
---   | otherwise                = movePiece validatedStatus input
---   where validatedStatus = validate gameStatus input
+apply gameStatus (Just input, Nothing)
+  | hasError validatedStatus = validatedStatus
+  | otherwise                = movePiece validatedStatus input
+  where validatedStatus = validate gameStatus input
 
 
 movePiece :: GameStatus -> Input -> GameStatus
@@ -47,8 +48,8 @@ validatePath :: GameStatus -> Input -> GameStatus
 validatePath gameStatus input
   | pieceValue == Rook   = validateRookMove gameStatus input
   | pieceValue == Knight = undefined
-  | pieceValue == Bishop = undefined
-  | pieceValue == Queen  = undefined
+  | pieceValue == Bishop = validateBishopMove gameStatus input
+  | pieceValue == Queen  = validateQueenMove gameStatus input
   | pieceValue == King   = undefined
   | pieceValue == Pawn   = undefined
   | otherwise = pushError gameStatus WTF
@@ -68,6 +69,27 @@ validateRookMove gameStatus input
   | originRank == targetRank = checkPathIsFree gameStatus rankPath
   | originFile == targetFile = checkPathIsFree gameStatus filePath
   | otherwise                = pushError gameStatus InvalidMove
+  where originFile = (getFile . getOrigin) input
+        targetFile = (getFile . getTarget) input
+        originRank = (getRank . getOrigin) input
+        targetRank = (getRank . getTarget) input
+        rankPath   = getRankPath originRank originFile targetFile
+        filePath   = getFilePath originFile originRank targetRank
+
+
+validateBishopMove :: GameStatus -> Input -> GameStatus
+validateBishopMove gameStatus input
+  | isValidMove == True = gameStatus
+  | otherwise           = pushError gameStatus InvalidMove
+  where validatedGameStatus = isValidBishopMove gameStatus input
+        isValidMove         = hasErrors validatedGameStatus
+
+
+validateQueenMove :: GameStatus -> Input -> GameStatus
+validateQueenMove gameStatus input
+  | originRank == targetRank = validateRookMove   gameStatus input
+  | originFile == targetFile = validateRookMove   gameStatus input
+  | otherwise                = validateBishopMove gameStatus input
   where originFile = (getFile . getOrigin) input
         targetFile = (getFile . getTarget) input
         originRank = (getRank . getOrigin) input
