@@ -41,7 +41,7 @@ data GameStatus =
 
 instance Show GameStatus where
    show (GameStatus board _ [])    = showBoard board
-   show (GameStatus board _ (e:_)) = (showBoard board) ++ "\nError: " ++ (show e)
+   show (GameStatus board _ (e:_)) = showBoard board ++ "\nError: " ++ show e
 
 
 hasError :: GameStatus -> Bool
@@ -54,7 +54,7 @@ pushError (GameStatus board player errors) e = GameStatus board player (e:errors
 
 
 popError :: GameStatus -> (Maybe ChessError, GameStatus)
-popError (GameStatus b p []) = (Nothing, (GameStatus b p []))
+popError (GameStatus b p []) = (Nothing, GameStatus b p [])
 popError (GameStatus b p (e:es)) = (Just e, GameStatus b p es)
 
 

@@ -3,10 +3,21 @@ module Chess.Input where
 import Data.Char (ord)
 
 import Chess.Pieces
+    ( Piece(Piece),
+      Player,
+      PieceValue(Pawn, King, Queen, Bishop, Knight, Rook) )
 import Chess.Board
+    ( BoardCell,
+      findPiece,
+      findPieceAtFileOrRank,
+      findPieceAtFile,
+      parseRank )
 import Chess.Game
+    ( GameStatus(GameStatus),
+      ChessError(CouldNotParseTarget, EmptyInput, ShortInput, LongInput,
+                 CouldNotParsePiece, CouldNotParseSource) )
 
-data Input = Input {piece :: Piece, origin :: BoardCell, target::BoardCell}
+data Input = Input {piece :: !Piece, origin :: !BoardCell, target :: !BoardCell}
     deriving (Read, Show, Eq)
 
 type ParsedInput = (Maybe Input, Maybe ChessError)
@@ -15,7 +26,7 @@ type ParsedInput = (Maybe Input, Maybe ChessError)
 parseInput :: GameStatus -> [Char] -> ParsedInput
 
 parseInput _             [] = (Nothing, Just EmptyInput)
-parseInput _         (_:[]) = (Nothing, Just ShortInput)
+parseInput _            [_] = (Nothing, Just ShortInput)
 parseInput _ (_:_:_:_:_:xs) = (Nothing, Just LongInput)
 
 parseInput gameStatus input = validateInput piece source target where
@@ -24,7 +35,7 @@ parseInput gameStatus input = validateInput piece source target where
     target = getTargetFromInput input
 
 
-validateInput :: (Maybe Piece) -> (Maybe BoardCell) -> (Maybe BoardCell) -> ParsedInput
+validateInput :: Maybe Piece -> Maybe BoardCell -> Maybe BoardCell -> ParsedInput
 
 validateInput Nothing _       _       = (Nothing, Just CouldNotParsePiece)
 validateInput _       Nothing _       = (Nothing, Just CouldNotParseSource)
@@ -35,30 +46,30 @@ validateInput (Just piece) (Just source) (Just target) =
 
 
 getPieceFromInput :: GameStatus -> [Char] -> Maybe Piece
-getPieceFromInput (GameStatus _ player _) (_:_:[]) = Just (Piece Pawn player)
+getPieceFromInput (GameStatus _ player _) [_,_] = Just (Piece Pawn player)
 getPieceFromInput (GameStatus _ player _) (p:_:_:_) = parsePiece p player
 getPieceFromInput _ _ = Nothing
 
 
-getSourceFromInput :: GameStatus -> (Maybe Piece) -> [Char] -> Maybe BoardCell
+getSourceFromInput :: GameStatus -> Maybe Piece -> [Char] -> Maybe BoardCell
 
-getSourceFromInput (GameStatus board _ _) (Just piece) (_:_:_:[]) =
+getSourceFromInput (GameStatus board _ _) (Just piece) [_,_,_] =
     findPiece board piece
 
-getSourceFromInput (GameStatus board _ _) (Just piece) (_:fileOrRank:_:_:[]) =
+getSourceFromInput (GameStatus board _ _) (Just piece) [_,fileOrRank,_,_] =
     findPieceAtFileOrRank board piece fileOrRank
 
-getSourceFromInput (GameStatus board _ _) (Just piece) (file:_:[]) =
+getSourceFromInput (GameStatus board _ _) (Just piece) [file,_] =
     findPieceAtFile board piece file
 
 getSourceFromInput _ _ _ = Nothing
 
 
 getTargetFromInput :: [Char] -> Maybe BoardCell
-getTargetFromInput     (file:rank:[]) = parseBoardCell file rank
-getTargetFromInput   (_:file:rank:[]) = parseBoardCell file rank
-getTargetFromInput (_:_:file:rank:[]) = parseBoardCell file rank
-getTargetFromInput                  _ = Nothing
+getTargetFromInput [file, rank] = parseBoardCell file rank
+getTargetFromInput [_, file, rank] = parseBoardCell file rank
+getTargetFromInput [_, _, file, rank] = parseBoardCell file rank
+getTargetFromInput _ = Nothing
 
 
 parseBoardCell :: Char -> Char -> Maybe BoardCell

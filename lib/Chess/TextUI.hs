@@ -22,8 +22,8 @@ goMerge xs ys ms
         where
             xs'   = tail xs
             ys'   = tail ys
-            ms'   = ms ++ heads
-            heads = (head xs) : (head ys) : []
+            ms'   = ms ++ [head xs, head ys]
+
 
 
 linesToText :: [[Char]] -> [Char]

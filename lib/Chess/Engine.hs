@@ -23,7 +23,7 @@ apply gameStatus (Just input, Nothing) =
 
 movePiece :: GameStatus -> Input -> GameStatus
 movePiece (GameStatus board player errors) (Input piece from to) =
-    if elem (from, piece) board
+    if (from, piece) `elem` board
        then GameStatus newBoard (nextPlayer player) errors
        else GameStatus board player (PieceNotFound:errors)
             where

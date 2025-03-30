@@ -9,11 +9,11 @@ import Chess.Engine
 play :: IO ()
 play = playLoop initialGameStatus
 
-prompt gs = ((show . getPlayer) gs) ++ " >> "
+prompt gs = (show . getPlayer) gs ++ " >> "
 
 playLoop :: GameStatus -> IO ()
 playLoop gameStatus = do
-    (putStrLn . show) gameStatus
+    print gameStatus
     (putStr . prompt) gameStatus
     hFlush stdout
     input <- getLine
