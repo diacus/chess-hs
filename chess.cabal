@@ -57,12 +57,14 @@ executable chess
                        , Chess.Pieces
                        , Chess.Game
                        , Chess.TextUI
+                       , Chess.Moves.Bishop
+                       , Chess.Moves.Types
 
   -- LANGUAGE extensions used by modules in this package.
   -- other-extensions:
 
   -- Other library packages from which modules are imported.
-  build-depends:       base >=4.11, prompt >=0.1.1.2
+  build-depends:       base >=4.11
 
   -- Directories containing source files.
   hs-source-dirs:      src
@@ -85,6 +87,9 @@ executable test
                        , Chess.Pieces
                        , Chess.Game
                        , Chess.TextUI
+                       , Chess.Moves.Bishop
+                       , Chess.Moves.Types
+
   build-depends:       base >=4.11, HUnit >=1.6.2.0
   hs-source-dirs:      src, test
   default-language:    Haskell2010
