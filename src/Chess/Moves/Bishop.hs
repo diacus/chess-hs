@@ -3,7 +3,7 @@ module Chess.Moves.Bishop  where
 import Chess.Moves.Types
 
 isValidBishopMove :: MoveValidator
-isValidBishopMove = isTargetInScope reachableBishopCoordinates
+isValidBishopMove = undefined
 
 reachableBishopCoordinates :: PathComputerCallback
 reachableBishopCoordinates (m, n) =
