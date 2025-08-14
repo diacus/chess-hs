@@ -82,7 +82,7 @@ validateBishopMove gameStatus input
   | isValidMove == True = gameStatus
   | otherwise           = pushError gameStatus InvalidMove
   where validatedGameStatus = isValidBishopMove gameStatus input
-        isValidMove         = hasErrors validatedGameStatus
+        isValidMove         = hasError validatedGameStatus
 
 
 validateQueenMove :: GameStatus -> Input -> GameStatus
