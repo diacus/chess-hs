@@ -26,4 +26,6 @@ coordinateToCell :: Coordinate -> BoardCell
 coordinateToCell (x, y) = (chr (x + ord 'a'), y + 1)
 
 isOnTheBoard :: Coordinate -> Bool
-isOnTheBoard (x, y) = elem x [0 .. 7] && elem y [0 .. 7]
+isOnTheBoard (x, y) = isValidComponent x && isValidComponent y
+  where
+    isValidComponent c = (>= 0) c && (<= 7) c
