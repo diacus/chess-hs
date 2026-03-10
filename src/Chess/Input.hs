@@ -15,9 +15,9 @@ type ParsedInput = (Maybe Input, Maybe ChessError)
 
 parseInput :: GameStatus -> [Char] -> ParsedInput
 
-parseInput _             [] = (Nothing, Just EmptyInput)
-parseInput _         (_:[]) = (Nothing, Just ShortInput)
-parseInput _ (_:_:_:_:_:xs) = (Nothing, Just LongInput)
+parseInput _              []  = (Nothing, Just EmptyInput)
+parseInput _           (_:[]) = (Nothing, Just ShortInput)
+parseInput _ (_:_:_:_:_:_:xs) = (Nothing, Just LongInput)
 
 parseInput gameStatus input = validateInput piece source target where
     piece  = getPieceFromInput  gameStatus input
@@ -55,13 +55,18 @@ getSourceFromInput (GameStatus board _ _) (Just piece) (_:fileOrRank:_:_:[]) =
 getSourceFromInput (GameStatus board _ _) (Just piece) (file:_:[]) =
     findPieceAtFile board piece file
 
+getSourceFromInput (GameStatus board _ _) (Just piece) (_:_:_:_:_:[]) =
+    findPiece board piece
+
 getSourceFromInput _ _ _ = Nothing
 
 
 getTargetFromInput :: [Char] -> Maybe BoardCell
-getTargetFromInput     (file:rank:[]) = parseBoardCell file rank
-getTargetFromInput   (_:file:rank:[]) = parseBoardCell file rank
-getTargetFromInput (_:_:file:rank:[]) = parseBoardCell file rank
+getTargetFromInput           (file:rank:[]) = parseBoardCell file rank
+getTargetFromInput         (_:file:rank:[]) = parseBoardCell file rank
+getTargetFromInput       (_:_:file:rank:[]) = parseBoardCell file rank
+getTargetFromInput     (_:_:_:file:rank:[]) = parseBoardCell file rank
+getTargetFromInput (_:_:_:_:_:file:rank:[]) = parseBoardCell file rank
 getTargetFromInput                  _ = Nothing
 
 

@@ -5,6 +5,8 @@ import Chess.Game
 import Chess.Input
 
 import Chess.Moves.Bishop
+import Chess.Moves.King
+import Debug.Trace (trace)
 
 
 applyInput :: GameStatus -> [Char] -> GameStatus
@@ -14,9 +16,9 @@ applyInput gameStatus rawInput = apply status input where
 
 
 apply :: GameStatus -> ParsedInput -> GameStatus
-apply gameStatus (Nothing, Just e) = pushError gameStatus e
+apply gameStatus (Nothing, Just e) = trace ("parse error: " ++ show e) $ pushError gameStatus e
 apply gameStatus (Just input, Nothing)
-  | hasError validatedStatus = validatedStatus
+  | hasError validatedStatus = trace ("validation error: " ++ show (getErrors validatedStatus)) validatedStatus
   | otherwise                = movePiece validatedStatus input
   where validatedStatus = validate gameStatus input
 
@@ -31,11 +33,15 @@ movePiece (GameStatus board player errors) (Input piece from to) =
 
 
 validate :: GameStatus -> Input -> GameStatus
-validate gameStatus input
-  | origin       == target = pushError gameStatus WTF
-  | isPieceFound == False  = pushError gameStatus PieceNotFound
-  | hasError validatedPath = validatedPath
-  | otherwise              = checkCellIsAvailable validatedPath input
+validate gameStatus input =
+    let _ = trace ("validate: " ++ show (getOrigin input) ++ " -> " ++ show (getTarget input) ++ " piece=" ++ show (getPiece input)) ()
+    in if origin == target
+       then pushError gameStatus WTF
+       else if isPieceFound == False
+       then pushError gameStatus PieceNotFound
+       else if hasError validatedPath
+       then validatedPath
+       else checkCellIsAvailable validatedPath input
   where isPieceFound  = isPieceAtCell gameStatus piece origin
         validatedPath = validatePath gameStatus input
         piece         = getPiece  input
@@ -50,7 +56,7 @@ validatePath gameStatus input
   | pieceValue == Knight = undefined
   | pieceValue == Bishop = validateBishopMove gameStatus input
   | pieceValue == Queen  = validateQueenMove gameStatus input
-  | pieceValue == King   = undefined
+  | pieceValue == King   = validateKingMove gameStatus input
   | pieceValue == Pawn   = undefined
   | otherwise = pushError gameStatus WTF
   where pieceValue = (getValue . getPiece) input
@@ -83,6 +89,11 @@ validateBishopMove gameStatus input
   | otherwise           = pushError gameStatus InvalidMove
   where validatedGameStatus = isValidBishopMove gameStatus input
         isValidMove         = hasError validatedGameStatus
+
+
+validateKingMove :: GameStatus -> Input -> GameStatus
+validateKingMove gameStatus input =
+    isValidKingMove gameStatus input
 
 
 validateQueenMove :: GameStatus -> Input -> GameStatus
