@@ -6,6 +6,7 @@ import Chess.Input
 
 import Chess.Moves.Bishop
 import Chess.Moves.King
+import Chess.Moves.Pawn (validatePawnMove)
 import Debug.Trace (trace)
 
 
@@ -57,7 +58,7 @@ validatePath gameStatus input
   | pieceValue == Bishop = validateBishopMove gameStatus input
   | pieceValue == Queen  = validateQueenMove gameStatus input
   | pieceValue == King   = validateKingMove gameStatus input
-  | pieceValue == Pawn   = undefined
+  | pieceValue == Pawn   = validatePawnMove gameStatus input
   | otherwise = pushError gameStatus WTF
   where pieceValue = (getValue . getPiece) input
 
